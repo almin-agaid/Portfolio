@@ -5,7 +5,9 @@
   min-height: 100vh;
   min-height: 100svh;
   padding: calc(var(--nav-h) + 2.5rem) 0 5rem;
-  scroll-margin-top: 0;
+  /* The Home links land one corner radius (--sheet-r, set by Intro) below the sheet's top edge, so the sheet is fully
+     docked: its rounded corners, which show the poster, have left the screen. */
+  scroll-margin-top: calc(var(--sheet-r, 0px) * -1);
   /* The decorative orbit ring is wider than its box; clip it so it can never cause sideways scroll. */
   overflow-x: clip;
 }
@@ -123,13 +125,6 @@
   font-size: clamp(1rem, 0.96rem + 0.2vw, 1.1rem);
 }
 
-.hero__cta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.85rem;
-  margin-top: 2rem;
-}
-
 .hero__socials {
   display: flex;
   gap: 0.7rem;
@@ -193,7 +188,14 @@
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 32px;
-  background: var(--card);
+  /* The backdrop lives on the card, so a cut-out photo (transparent background) stands in front of
+     it, with an orange glow behind the subject; an ordinary photo simply covers it. */
+  background:
+    radial-gradient(60% 55% at 50% 62%, color-mix(in srgb, var(--accent) 32%, transparent), transparent 72%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 28px 28px,
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 28px 28px,
+    radial-gradient(90% 90% at 25% 15%, var(--accent-soft), transparent 70%),
+    radial-gradient(90% 90% at 85% 90%, var(--accent-2-soft), transparent 70%), var(--card);
   box-shadow: var(--shadow-lg);
 }
 
@@ -201,6 +203,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center bottom;
 }
 
 .profile__placeholder {
@@ -208,11 +211,6 @@
   place-items: center;
   width: 100%;
   height: 100%;
-  background:
-    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 28px 28px,
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 28px 28px,
-    radial-gradient(90% 90% at 25% 15%, var(--accent-soft), transparent 70%),
-    radial-gradient(90% 90% at 85% 90%, var(--accent-2-soft), transparent 70%), var(--card);
 }
 
 .profile__placeholder span {
@@ -326,10 +324,6 @@
 }
 
 @media (max-width: 480px) {
-  .hero__cta .btn {
-    flex: 1 1 100%;
-  }
-
   .profile__chip--1 {
     right: -2%;
   }

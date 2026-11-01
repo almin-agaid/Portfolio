@@ -1,9 +1,8 @@
 import { Fragment } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowDown, ArrowRight, Download, Mail } from 'lucide-react'
+import { ArrowDown } from 'lucide-react'
 import { profile, socials } from '../data/portfolioData'
 import { EASE, fadeUp, scaleIn, stagger } from '../lib/motion'
-import Button from './ui/Button'
 import { socialIcons } from './ui/BrandIcons'
 import { getIcon } from './ui/icons'
 import './Hero.css'
@@ -30,7 +29,9 @@ export default function Hero({ ready }) {
         className="container hero__grid"
         variants={stagger(0.12, 0.05)}
         initial="hidden"
-        animate={ready ? 'show' : 'hidden'}
+        // The opening scene comes first now, so the hero reveals itself when it scrolls into view.
+        whileInView={ready ? 'show' : undefined}
+        viewport={{ once: true, amount: 0.25 }}
       >
         <div className="hero__content">
           {profile.availability && (
@@ -75,20 +76,6 @@ export default function Hero({ ready }) {
           <motion.p className="hero__intro" variants={fadeUp}>
             {profile.intro}
           </motion.p>
-
-          <motion.div className="hero__cta" variants={fadeUp}>
-            <Button href="#projects" icon={ArrowRight}>
-              View My Projects
-            </Button>
-            <Button href="#contact" variant="ghost" icon={Mail} iconPosition="start">
-              Contact Me
-            </Button>
-            {profile.resume && (
-              <Button href={profile.resume} variant="subtle" icon={Download} iconPosition="start" download>
-                Download CV
-              </Button>
-            )}
-          </motion.div>
 
           <motion.ul className="hero__socials" variants={fadeUp} aria-label="Social links">
             {socials.map((social) => {

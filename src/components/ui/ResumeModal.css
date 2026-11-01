@@ -1,0 +1,46 @@
+/* Taller and wider than the project modal, and the PDF fills everything under a slim title bar. */
+.resume-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(820px, 100%);
+  height: calc(100dvh - 2rem);
+  overflow: hidden;
+}
+
+.resume-modal__bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0.75rem 0.6rem 1.25rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.resume-modal__title {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.resume-modal__frame {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  background: var(--bg-alt);
+}
+
+.resume-modal__fallback {
+  padding: 2rem 1.5rem;
+  color: var(--text-muted);
+}
+
+.resume-modal__fallback a {
+  color: var(--accent-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

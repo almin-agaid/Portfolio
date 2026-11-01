@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { ArrowUp } from 'lucide-react'
 import { footer, navLinks, profile, socials } from '../data/portfolioData'
 import { fadeUp, revealOnScroll } from '../lib/motion'
+import { scrollToY } from '../lib/smoothScroll'
 import LogoMark from './ui/Logo'
 import { socialIcons } from './ui/BrandIcons'
 import './Footer.css'
@@ -16,7 +17,7 @@ export default function Footer() {
           <motion.div className="footer__brand" variants={fadeUp}>
             <a href="#home" className="footer__logo">
               <LogoMark size={34} />
-              <span>{profile.name}</span>
+              <span>{profile.brand || profile.name}</span>
             </a>
             <p>{footer.tagline}</p>
           </motion.div>
@@ -65,7 +66,7 @@ export default function Footer() {
           <motion.button
             type="button"
             className="footer__top-btn"
-            onClick={() => window.scrollTo({ top: 0 })}
+            onClick={() => scrollToY(0)}
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.96 }}
           >

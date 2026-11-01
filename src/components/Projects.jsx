@@ -13,7 +13,7 @@ import './Projects.css'
 function ProjectCard({ project, onOpen }) {
   return (
     <motion.li className="project" variants={fadeUp}>
-      <motion.article className="project__card" whileHover={{ y: -6 }} transition={{ type: 'spring', stiffness: 300, damping: 24 }}>
+      <motion.article className="project__card glow-border" whileHover={{ y: -6 }} transition={{ type: 'spring', stiffness: 300, damping: 24 }}>
         <div className="project__media">
           <ProjectThumb project={project} />
           {project.year && <span className="project__year mono">{project.year}</span>}

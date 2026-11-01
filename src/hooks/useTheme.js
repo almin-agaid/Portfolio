@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 
 // Versioned (-v2) so a theme saved before the black/orange redesign does not carry over (keep in sync with index.html).
 const STORAGE_KEY = 'portfolio-theme-v2'
-const THEME_COLORS = { dark: '#1F2328', light: '#FFFAF6' }
+const THEME_COLORS = { dark: '#000000', light: '#FFFAF6' } // the page colour (--page in index.css)
 
 // The initial theme is applied by an inline script in index.html (before first paint);
 // this hook just mirrors it into React state and handles toggling.

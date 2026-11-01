@@ -161,6 +161,105 @@
   line-height: 1.4;
 }
 
+/* ---------- Gradient border ----------
+   Add the class "glow-border" to a card (it needs a border-radius). The 1px border is transparent and
+   a conic gradient shows through it: at rest the ring is the normal border colour; on hover, or keyboard
+   focus, an orange arc fades in and runs around the edge. A card can change its inner fill with
+   --glow-fill (default --card). The angle and the two arc colours are registered properties so the
+   browser can animate them; the fallbacks keep the card looking normal where that is unsupported. */
+@property --glow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --glow-tail {
+  syntax: '<color>';
+  initial-value: transparent;
+  inherits: false;
+}
+
+@property --glow-head {
+  syntax: '<color>';
+  initial-value: transparent;
+  inherits: false;
+}
+
+@keyframes glow-spin {
+  to {
+    --glow-angle: 360deg;
+  }
+}
+
+/* A card lists this first in its own transition, e.g.  transition: var(--glow-transition), box-shadow 0.3s ease; */
+:root {
+  --glow-transition: --glow-tail 0.4s ease, --glow-head 0.4s ease;
+}
+
+.glow-border {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--glow-fill, var(--card)), var(--glow-fill, var(--card))) padding-box,
+    conic-gradient(
+        from var(--glow-angle, 0deg),
+        transparent 55%,
+        var(--glow-tail, transparent) 82%,
+        var(--glow-head, transparent) 96%,
+        transparent 100%
+      )
+      border-box,
+    linear-gradient(var(--border), var(--border)) border-box;
+  animation: glow-spin 3.6s linear infinite paused;
+  transition: var(--glow-transition);
+}
+
+.glow-border:hover {
+  --glow-tail: var(--accent);
+  --glow-head: var(--accent-2);
+  animation-play-state: running;
+}
+
+/* Keyboard focus only (not a click), and in its own rule so a browser without :has() still gets :hover */
+.glow-border:has(:focus-visible) {
+  --glow-tail: var(--accent);
+  --glow-head: var(--accent-2);
+  animation-play-state: running;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-border {
+    animation: none;
+  }
+}
+
+/* ---------- Cursor glow ---------- */
+.cursor-glow {
+  position: fixed;
+  /* The size is --cursor-glow-size (index.css). Offsetting by half of it means translating the element
+     to the pointer position centres the light on the pointer. */
+  top: calc(var(--cursor-glow-size) / -2);
+  left: calc(var(--cursor-glow-size) / -2);
+  z-index: 30; /* above the page, below the navbar (50), the back-to-top button (40) and the modal (120) */
+  width: var(--cursor-glow-size);
+  height: var(--cursor-glow-size);
+  border-radius: 50%;
+  background: radial-gradient(circle closest-side, var(--cursor-glow), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  will-change: transform;
+}
+
+.cursor-glow--on {
+  opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor-glow {
+    display: none;
+  }
+}
+
 /* ---------- Logo mark ---------- */
 .logo-mark {
   flex: none;
@@ -237,59 +336,17 @@
   transform-origin: 0 50%;
 }
 
-/* ---------- Background decoration ---------- */
+/* ---------- Page background: a sparse grid of small dim dots (the reference's inner page) ----------
+   Fixed behind the page, so the content slides over a still field. The tiles use the same pitch as the opening
+   poster's dots (--cell) and are centred on the screen, so the two grids line up. */
 .bg-decor {
   position: fixed;
   inset: 0;
   z-index: -1;
-  overflow: hidden;
   pointer-events: none;
-}
-
-.bg-decor__grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 15%, transparent 75%);
-  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 15%, transparent 75%);
-}
-
-.bg-decor__glow {
-  position: absolute;
-  width: 60vw;
-  max-width: 760px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  will-change: transform;
-}
-
-.bg-decor__glow--one {
-  top: -18%;
-  left: -12%;
-  background: radial-gradient(circle, var(--glow-1), transparent 65%);
-  animation: drift-a 26s ease-in-out infinite alternate;
-}
-
-.bg-decor__glow--two {
-  right: -14%;
-  bottom: -22%;
-  background: radial-gradient(circle, var(--glow-2), transparent 65%);
-  animation: drift-b 30s ease-in-out infinite alternate;
-}
-
-@keyframes drift-a {
-  to {
-    transform: translate3d(8vw, 6vh, 0) scale(1.12);
-  }
-}
-
-@keyframes drift-b {
-  to {
-    transform: translate3d(-7vw, -8vh, 0) scale(1.1);
-  }
+  background-image: radial-gradient(circle, var(--dot) var(--dot-r), transparent calc(var(--dot-r) + 0.5px));
+  background-size: var(--cell) var(--cell);
+  background-position: center;
 }
 
 /* ---------- Project thumbnail (framed screenshot or generated wireframe) ---------- */

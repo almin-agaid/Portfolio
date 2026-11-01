@@ -62,9 +62,9 @@
   height: 44px;
   border: 2px solid var(--accent);
   border-radius: 50%;
-  background: var(--bg);
+  background: var(--page); /* the node and its ring blend into the page behind the timeline line */
   color: var(--accent-ink);
-  box-shadow: 0 0 0 6px var(--bg);
+  box-shadow: 0 0 0 6px var(--page);
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
@@ -77,17 +77,18 @@
 
 .timeline__card {
   padding: 1.5rem;
-  border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--card);
   transition:
-    border-color 0.3s ease,
+    var(--glow-transition),
     box-shadow 0.3s ease,
     transform 0.3s var(--ease);
 }
 
+/* Hovering anywhere on the entry (the dot too) lights the card's border, like hovering the card itself */
 .timeline__item:hover .timeline__card {
-  border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+  --glow-tail: var(--accent);
+  --glow-head: var(--accent-2);
+  animation-play-state: running;
   box-shadow: var(--shadow-md);
 }
 

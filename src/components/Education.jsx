@@ -52,7 +52,7 @@ export default function Education() {
                   <Icon size={18} />
                 </span>
 
-                <article className="timeline__card">
+                <article className="timeline__card glow-border">
                   <p className="timeline__period mono">{entry.period}</p>
                   <h3 className="timeline__program">{entry.program}</h3>
                   <p className="timeline__institution">{entry.institution}</p>

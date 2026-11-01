@@ -1,0 +1,256 @@
+/* The opening scene. The poster colours are fixed (not theme tokens): orange field, near-black ink.
+   To try the reference's pure red, change --intro-bg.
+
+   The poster is pinned (sticky) and the rest of the site (.site) slides up over it. */
+.intro {
+  --intro-bg: var(--accent);
+  --intro-ink: #0b0c0e;
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100svh;
+}
+
+.intro__stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--intro-bg);
+  color: var(--intro-ink);
+}
+
+.intro__pan {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+/* ---------- Dot grid ---------- */
+.intro__dots {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-auto-rows: var(--cell);
+  grid-template-columns: repeat(13, var(--cell));
+  align-content: center;
+  justify-content: center;
+}
+
+.intro__dots i {
+  width: 5px;
+  height: 5px;
+  place-self: center;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---------- Centre: the clock face (an SVG box, 62vmin square) ---------- */
+.intro__art {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 62vmin;
+  height: 62vmin;
+  margin: -31vmin 0 0 -31vmin;
+  overflow: visible;
+}
+
+.intro__hands {
+  color: var(--intro-bg);
+}
+
+.intro__hands line {
+  stroke: currentColor;
+  stroke-width: 0.34;
+  stroke-linecap: round;
+}
+
+.intro__hands circle {
+  fill: currentColor;
+}
+
+/* ---------- Corner numbers ---------- */
+.intro__row {
+  position: absolute;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1vw;
+  pointer-events: none;
+}
+
+.intro__row--top {
+  top: 0.9vw;
+}
+
+.intro__row--bottom {
+  bottom: 0.9vw;
+}
+
+.intro__digit {
+  display: block;
+  font-family: 'Archivo', 'DM Sans', system-ui, sans-serif;
+  font-size: clamp(5.5rem, min(22vw, 33svh), 30rem);
+  font-stretch: 125%;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.8;
+  text-transform: uppercase;
+}
+
+/* ---------- Small furniture ("the chrome") ---------- */
+.intro__brand {
+  position: absolute;
+  top: 1.3rem;
+  right: 0;
+  left: 0;
+  font-family: 'Archivo', 'DM Sans', system-ui, sans-serif;
+  font-size: clamp(1rem, 1.6vw, 1.6rem);
+  font-stretch: 125%;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.intro__tab {
+  position: absolute;
+  top: 38%;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+  padding: 0.9rem 0.7rem;
+  background: var(--intro-ink);
+  color: #fff;
+  font-weight: 800;
+}
+
+.intro__tab-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transform: rotate(180deg);
+  writing-mode: vertical-rl;
+}
+
+.intro__cue {
+  position: absolute;
+  bottom: 2vh;
+  left: 50%;
+  translate: -50% 0;
+  cursor: pointer;
+}
+
+.intro__cue svg {
+  animation: intro-bob 1.8s ease-in-out infinite;
+}
+
+/* The page the sheet is made of: positioned and later in the DOM, so it paints over the pinned poster. Its top
+   corners are rounded by clipping the poster (see lib/sheet.js); the poster itself stays at full brightness. */
+.site {
+  position: relative;
+}
+
+/* ---------- Load sequence: the page assembles in order ----------
+   1. the dot grid, a wave from the centre   2. the dial, then the hands   3. the numbers
+   4. two seconds in, the chrome (label, cue, buttons) */
+.intro:not(.intro--go) :is(.intro__dots i, .intro__dial, .intro__hands, .intro__row, .intro__brand, .intro__tab, .intro__cue) {
+  opacity: 0;
+}
+
+.intro--go .intro__dots i {
+  animation: intro-dot var(--d) ease-out backwards;
+}
+
+.intro--go .intro__dial {
+  animation: intro-fade 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.45s backwards;
+}
+
+.intro--go .intro__hands {
+  animation: intro-fade 0.7s ease-out 0.55s backwards;
+}
+
+.intro--go .intro__row {
+  animation: intro-fade 0.6s ease-out 0.8s backwards;
+}
+
+.intro--go .intro__brand {
+  animation: intro-drop 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2s backwards;
+}
+
+.intro--go .intro__cue {
+  animation: intro-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.1s backwards;
+}
+
+.intro--go .intro__tab {
+  animation: intro-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.2s backwards;
+}
+
+/* each dot stays hidden for the first half of its own duration, then fades in */
+@keyframes intro-dot {
+  0%,
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes intro-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes intro-drop {
+  from {
+    opacity: 0;
+    translate: 0 -120%;
+  }
+}
+
+@keyframes intro-rise {
+  from {
+    opacity: 0;
+    translate: -50% 14px;
+  }
+}
+
+@keyframes intro-bob {
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@media (max-width: 640px) {
+  .intro__digit {
+    font-size: clamp(4.5rem, 30vw, 14rem);
+  }
+
+  .intro__art {
+    width: 78vmin;
+    height: 78vmin;
+    margin: -39vmin 0 0 -39vmin;
+  }
+
+  /* the corner numbers fill the whole top row on a phone, so the brand sits just under them, not behind them
+     (the numbers' line box is 0.8 x their 30vw font size, starting 0.9vw down) */
+  .intro__brand {
+    top: calc(0.9vw + 24vw + 0.4rem);
+  }
+
+  .intro__tab {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro--go * {
+    animation: none !important;
+  }
+}

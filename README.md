@@ -23,6 +23,7 @@ It is all sample content right now. Search the file for `TODO`, then update:
 | Email address | `EMAIL` constant at the top |
 | GitHub / LinkedIn links | `socials` |
 | Bio, interests, career goals | `about` |
+| Typing terminal card (top of About) | `terminal` |
 | Skills (no percentages by design; text chips or logo tiles) | `skillCategories` |
 | Projects | `projects` |
 | Schooling | `education` |
@@ -33,11 +34,15 @@ Also update the `<title>` and `<meta>` tags in [`index.html`](index.html) (they 
 Optional fields hide their UI while empty, so you never get a dead button:
 
 - **Profile photo**: drop `profile.jpg` in `/public`, set `profile.image: '/profile.jpg'`.
-- **CV / resume**: drop `resume.pdf` in `/public`, set `profile.resume: '/resume.pdf'`. The Download CV buttons (navbar, hero) appear automatically.
+- **CV / resume**: drop `resume.pdf` in `/public`, set `profile.resume: '/resume.pdf'`. The View CV buttons (navbar and mobile menu) appear automatically and open the PDF in a preview window on the page.
 - **Project links**: `github` and `live` per project. Empty means the button is hidden.
 - **Project screenshots**: put images in `/public/projects/` and list them in the project's `images` array, e.g. `{ src: '/projects/name.jpg', caption: 'Login', alt: 'What the screenshot shows' }`. The first image is the card cover; with two or more, the details window gets a screenshot switcher. With none (`images: []`), a generated preview is shown. Screenshots are shown whole, never cropped, so any shape works (desktop window, wide page, phone).
 - **Tech tags**: `tech` per project. The tag row is hidden while the list is empty.
 - **Project badge**: `badge: 'Capstone project'` shows a small label beside the project title (and above it in the details window). Empty or missing hides it.
+- **Animated card border**: add the class `glow-border` to any card (it needs a `border-radius`). On hover an orange arc runs around its edge.
+- **Page background**: a black field with a sparse grid of dim orange dots (`BackgroundDecor`, styled by `.bg-decor` in `ui.css`). The dots use the same pitch as the opening poster's dots (`--cell` in `index.css`); their colour is `--dot`. Only the page behind everything is black (`--page`); cards, the navbar and the alternate sections keep their own solid backgrounds, so the dots show only on the open page.
+- **HELLO! tab**: the small vertical word on the right edge (`src/components/HelloTab.jsx`). It slides in once you scroll down past the opening clock, and it is hidden on screens narrower than 1280px, where it would sit on top of the text. Change or hide it with `contact.helloTab`; it links to the Contact section.
+- **Cursor glow**: `src/components/ui/CursorGlow.jsx`, mounted in `App.jsx`. Delete that line to remove it, or tune `--cursor-glow` (colour and strength) and `--cursor-glow-size` in `index.css`. Touch screens never show it.
 
 ### Skill logos
 

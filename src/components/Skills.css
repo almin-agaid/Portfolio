@@ -9,16 +9,13 @@
   flex-direction: column;
   gap: 1.35rem;
   padding: 1.5rem;
-  border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--card);
   transition:
-    border-color 0.3s ease,
+    var(--glow-transition),
     box-shadow 0.3s ease;
 }
 
 .skill-card:hover {
-  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
   box-shadow:
     var(--shadow-md),
     0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent);

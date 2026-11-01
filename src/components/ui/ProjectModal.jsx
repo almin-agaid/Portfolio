@@ -1,59 +1,25 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Check, ExternalLink, X } from 'lucide-react'
+import useModal from '../../hooks/useModal'
 import { EASE } from '../../lib/motion'
 import { GithubIcon } from './BrandIcons'
 import Button from './Button'
 import ProjectGallery from './ProjectGallery'
-
-const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
 export default function ProjectModal({ project, onClose }) {
   const panelRef = useRef(null)
   const closeRef = useRef(null)
   const titleId = `project-title-${project.id}`
 
-  useEffect(() => {
-    const previouslyFocused = document.activeElement
-    const root = document.documentElement
-    const prevOverflow = root.style.overflow
-    root.style.overflow = 'hidden' // lock background scroll (scrollbar-gutter avoids layout shift)
-    closeRef.current?.focus()
-
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        onClose()
-        return
-      }
-      if (event.key !== 'Tab' || !panelRef.current) return
-
-      // Keep keyboard focus inside the dialog.
-      const items = [...panelRef.current.querySelectorAll(FOCUSABLE)]
-      if (!items.length) return
-      const first = items[0]
-      const last = items[items.length - 1]
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first.focus()
-      }
-    }
-    document.addEventListener('keydown', onKeyDown)
-
-    return () => {
-      document.removeEventListener('keydown', onKeyDown)
-      root.style.overflow = prevOverflow
-      previouslyFocused?.focus?.()
-    }
-  }, [onClose])
+  useModal(panelRef, closeRef, onClose)
 
   const hasLinks = project.github || project.live
 
   return (
     <motion.div
       className="modal"
+      data-lenis-prevent
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

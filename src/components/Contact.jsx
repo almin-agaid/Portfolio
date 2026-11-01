@@ -149,7 +149,13 @@ export default function Contact() {
                 </>
               )
               return (
-                <motion.li key={id} variants={slideInLeft}>
+                // The animated border goes on the <li>, not on the link: see the note in Contact.css.
+                <motion.li
+                  key={id}
+                  className={href ? 'glow-border' : undefined}
+                  variants={slideInLeft}
+                  whileHover={href ? { y: -3 } : undefined}
+                >
                   {href ? (
                     <a
                       href={href}
@@ -238,7 +244,7 @@ export default function Contact() {
                 <textarea
                   id="contact-message"
                   name="message"
-                  rows={6}
+                  rows={4}
                   value={values.message}
                   onChange={handleChange}
                   onBlur={handleBlur}

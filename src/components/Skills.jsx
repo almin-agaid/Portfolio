@@ -37,7 +37,7 @@ export default function Skills() {
             const chips = skills.filter((skill) => !hasLogo(skill))
 
             return (
-              <motion.li key={category.id} className="skill-card" variants={fadeUp} whileHover={{ y: -5 }}>
+              <motion.li key={category.id} className="skill-card glow-border" variants={fadeUp} whileHover={{ y: -5 }}>
                 <div className="skill-card__head">
                   <span className="skill-card__icon">
                     <Icon size={22} aria-hidden="true" />

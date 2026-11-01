@@ -1,20 +1,41 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Download, Menu, X } from 'lucide-react'
+import { FileText, Menu, X } from 'lucide-react'
 import { navLinks, profile } from '../data/portfolioData'
 import useActiveSection from '../hooks/useActiveSection'
+import { useResume } from '../hooks/useResume'
 import useScrolled from '../hooks/useScrolled'
 import { EASE } from '../lib/motion'
+import { sheetRadius } from '../lib/sheet'
 import LogoMark from './ui/Logo'
 import ThemeToggle from './ui/ThemeToggle'
 import './Navbar.css'
 
 const sectionIds = navLinks.map((link) => link.id)
+const brand = profile.brand || profile.name
+
+// The navbar stays out of the way of the opening scene and appears once the visitor scrolls past it: after the sheet
+// has reached the top and its rounded corners have left the screen, so the bar never hides them.
+const isPastIntro = () => window.scrollY >= window.innerHeight + sheetRadius()
 
 export default function Navbar({ ready }) {
   const [open, setOpen] = useState(false)
   const scrolled = useScrolled(16)
+
+  const [pastIntro, setPastIntro] = useState(isPastIntro)
+  useEffect(() => {
+    const update = () => setPastIntro(isPastIntro())
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
+  }, [])
+  const shown = ready && pastIntro
   const active = useActiveSection(sectionIds)
+  const { openResume } = useResume()
 
   // While the mobile menu is open: Escape closes it, and so does growing past the breakpoint.
   useEffect(() => {
@@ -36,13 +57,14 @@ export default function Navbar({ ready }) {
     <motion.header
       className={`navbar ${scrolled || open ? 'navbar--solid' : ''}`}
       initial={{ opacity: 0, y: -20 }}
-      animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+      animate={shown ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+      style={{ pointerEvents: shown ? 'auto' : 'none' }}
       transition={{ duration: 0.6, ease: EASE }}
     >
       <nav className="container navbar__inner" aria-label="Primary">
-        <a href="#home" className="navbar__logo" onClick={close} aria-label={`${profile.name} - back to top`}>
+        <a href="#home" className="navbar__logo" onClick={close} aria-label={`${brand} - back to top`}>
           <LogoMark size={34} />
-          <span>{profile.name}</span>
+          <span>{brand}</span>
         </a>
 
         <ul className="navbar__links">
@@ -69,10 +91,10 @@ export default function Navbar({ ready }) {
 
         <div className="navbar__actions">
           {profile.resume && (
-            <a href={profile.resume} download className="navbar__cv">
-              <Download size={16} aria-hidden="true" />
+            <button type="button" className="navbar__cv" onClick={openResume} aria-haspopup="dialog">
+              <FileText size={16} aria-hidden="true" />
               <span>CV</span>
-            </a>
+            </button>
           )}
           <ThemeToggle />
           <button
@@ -129,10 +151,18 @@ export default function Navbar({ ready }) {
                 ))}
               </ul>
               {profile.resume && (
-                <a href={profile.resume} download className="navbar__mobile-cv" onClick={close}>
-                  <Download size={18} aria-hidden="true" />
-                  Download CV
-                </a>
+                <button
+                  type="button"
+                  className="navbar__mobile-cv"
+                  aria-haspopup="dialog"
+                  onClick={() => {
+                    close()
+                    openResume()
+                  }}
+                >
+                  <FileText size={18} aria-hidden="true" />
+                  View CV
+                </button>
               )}
             </motion.div>
           </>

@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
 import { Check, GraduationCap, Target } from 'lucide-react'
-import { about, education } from '../data/portfolioData'
+import { about, education, terminal } from '../data/portfolioData'
 import { fadeUp, revealOnScroll, slideInLeft } from '../lib/motion'
 import SectionHeading from './ui/SectionHeading'
+import TerminalIntro from './ui/TerminalIntro'
 import { getIcon } from './ui/icons'
 import './About.css'
 
@@ -15,8 +16,12 @@ export default function About() {
         <SectionHeading index="01" label="About" id="about-title" title="A little about me" />
 
         <div className="about__grid">
-          {/* Left column: story + quick facts */}
+          {/* Left column: typing terminal, story, quick facts */}
           <motion.div className="about__story" {...revealOnScroll(0.1)}>
+            <motion.div variants={fadeUp}>
+              <TerminalIntro title={terminal.title} lines={terminal.lines} />
+            </motion.div>
+
             {about.bio.map((paragraph) => (
               <motion.p key={paragraph} variants={fadeUp}>
                 {paragraph}
@@ -36,7 +41,7 @@ export default function About() {
           {/* Right column: education, interests, goals */}
           <motion.div className="about__cards" {...revealOnScroll(0.12)}>
             {current && (
-              <motion.article className="about-card" variants={slideInLeft}>
+              <motion.article className="about-card glow-border" variants={slideInLeft}>
                 <span className="about-card__icon">
                   <GraduationCap size={20} aria-hidden="true" />
                 </span>
@@ -50,7 +55,7 @@ export default function About() {
               </motion.article>
             )}
 
-            <motion.article className="about-card about-card--stack" variants={slideInLeft}>
+            <motion.article className="about-card about-card--stack glow-border" variants={slideInLeft}>
               <h3 className="about-card__title">Interests</h3>
               <ul className="about__interests">
                 {about.interests.map((interest) => {
@@ -65,7 +70,7 @@ export default function About() {
               </ul>
             </motion.article>
 
-            <motion.article className="about-card" variants={slideInLeft}>
+            <motion.article className="about-card glow-border" variants={slideInLeft}>
               <span className="about-card__icon about-card__icon--alt">
                 <Target size={20} aria-hidden="true" />
               </span>

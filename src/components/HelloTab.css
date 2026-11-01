@@ -1,0 +1,61 @@
+.hello-tab {
+  position: fixed;
+  top: 50%;
+  right: 0.9rem;
+  z-index: 45; /* above the page, below the navbar (50) and the modals (120) */
+  color: var(--accent);
+  font-family: 'Archivo', 'DM Sans', system-ui, sans-serif;
+  font-size: clamp(1.05rem, 1.5vw, 1.6rem);
+  font-stretch: 125%;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  /* One `transform`, not `translate` + `transform`: the production build's CSS minifier drops the `translate` line
+     when both are in a rule. The vertical writing mode plus a half turn make the word read from the bottom up. */
+  transform: translate(1rem, -50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  /* hidden while the opening clock is on screen; `visibility` also keeps it out of the tab order, and it only flips
+     after the fade-out has finished */
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.4s ease,
+    transform 0.6s var(--ease),
+    visibility 0s linear 0.6s;
+}
+
+/* once the site has slid over the poster it fades in from the edge */
+.hello-tab--shown {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -50%) rotate(180deg);
+  transition-delay: 0s;
+}
+
+.hello-tab--shown:hover {
+  transform: translate(0, -50%) rotate(180deg) scale(1.08);
+}
+
+/* Narrower than the page's content column plus the label, it would sit on top of the text. */
+@media (max-width: 1279px) {
+  .hello-tab {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hello-tab {
+    transform: translate(0, -50%) rotate(180deg);
+    transition:
+      opacity 0.2s linear,
+      visibility 0s linear 0.2s;
+  }
+
+  .hello-tab--shown {
+    transition-delay: 0s;
+  }
+
+  .hello-tab--shown:hover {
+    transform: translate(0, -50%) rotate(180deg);
+  }
+}

@@ -181,12 +181,25 @@
   font-size: 0.78rem;
 }
 
+/* A button (it opens the CV pop-up), so it needs the row layout the links above get from `.navbar__mobile a` */
 .navbar__mobile .navbar__mobile-cv {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  min-height: 52px;
   margin-top: 0.35rem;
+  padding: 0 1rem;
   border-top: 1px solid var(--border-soft);
   border-radius: 0 0 12px 12px;
   color: var(--accent-ink);
   font-weight: 600;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+
+.navbar__mobile .navbar__mobile-cv:hover {
+  background: var(--accent-soft);
 }
 
 @media (min-width: 900px) {

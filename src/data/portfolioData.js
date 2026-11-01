@@ -17,8 +17,10 @@ const EMAIL = 'agaidalmin36@gmail.com'
 /* ---------- Identity & hero ---------- */
 export const profile = {
   name: 'Min Agaid', // TODO
+  // Text next to the logo in the navbar. Leave '' to show your name there instead.
+  brand: 'My Portfolio',
   greeting: "Hello, I'm",
-  roles: ['Information Technology Student', 'Aspiring IT Professional'],
+  roles: ['Information Technology Student'],
   // Optional status pill above the greeting, e.g. 'Open to internship opportunities'. Hidden while empty.
   availability: '',
   intro:
@@ -26,11 +28,11 @@ export const profile = {
 
   // Put your photo in /public (e.g. /public/profile.jpg) and set '/profile.jpg'.
   // While empty, a monogram placeholder is shown instead.
-  image: '/profile.jpg',
+  image: '/profile.webp',
 
   // Put your CV in /public (e.g. /public/resume.pdf) and set '/resume.pdf'.
-  // While empty, the "Download CV" buttons are hidden.
-  resume: '',
+  // While empty, the "View CV" buttons are hidden. They open the PDF in a preview window on the page (not a download).
+  resume: '/Almin-Agaid-Resume.pdf',
 
   // Small floating chips next to the profile picture. Icons: see components/ui/icons.js
   badges: [
@@ -85,6 +87,18 @@ export const about = {
       'Grow into a dependable software or systems professional',
     ],
   },
+}
+
+/* ---------- Terminal intro (About section) ----------
+   A small terminal card that types each command and then shows its answer when it scrolls into
+   view. Keep the answers short; they wrap on small screens. */
+export const terminal = {
+  title: `${profile.name.split(' ')[0].toLowerCase()}@portfolio: ~`,
+  lines: [
+    { command: 'whoami', output: `${profile.name} - ${profile.roles[0]}` },
+    { command: 'cat stack.txt', output: 'HTML, CSS, JavaScript, PHP, Java, Laravel, MySQL' },
+    { command: 'echo $LOOKING_FOR', output: 'an internship in web development or IT support' },
+  ],
 }
 
 /* ---------- Skills ----------
@@ -300,6 +314,8 @@ export const contact = {
   text: 'I am currently looking for internship opportunities and happy to chat about projects, collaborations, or questions. The fastest way to reach me is by email.',
   email: EMAIL,
   location: '', // e.g. 'Manila, Philippines' - hidden while empty
+  // The small vertical word on the right edge once you scroll past the opening clock; it links to this section. '' hides it.
+  helloTab: 'HELLO!',
 
   // The form can only deliver messages through a real service. Paste the endpoint of
   // a form service such as Formspree (https://formspree.io) to enable direct sending,

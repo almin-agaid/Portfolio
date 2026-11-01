@@ -1,14 +1,17 @@
 /* ==========================================================================
    Design system: tokens, reset, base elements, layout helpers
-   Palette: black/charcoal surfaces (#1F2328) with an orange accent (#F05A28), taken from the
-   Codeforge template. The light theme is a warm white with the same orange.
+   Palette: a black page (#000) with a sparse grid of dim dots, as on the reference's inner page, charcoal
+   panels (#1F2328 family) and an orange accent (#F05A28), taken from the Codeforge template. The light theme is
+   a warm white with the same orange.
    Type: DM Sans for everything, JetBrains Mono for small labels.
    ========================================================================== */
 
 :root {
   color-scheme: dark;
 
-  /* Surfaces: the template's charcoal page background with progressively lighter panels */
+  /* Surfaces: the template's charcoal for the elements, with progressively lighter panels. Only the page behind them
+     all (--page) is black. */
+  --page: #000000;
   --bg: #1f2328;
   --bg-alt: #252a30;
   --card: #2b3037;
@@ -34,9 +37,10 @@
   --nav-bg: rgb(31 35 40 / 0.72);
   --hover-bg: rgb(255 255 255 / 0.05);
   --grid-line: rgb(148 163 184 / 0.07);
+  --dot: rgb(240 90 40 / 0.55); /* the page background's dots (the poster's dots are drawn in Intro.css) */
   --scrollbar-thumb: rgb(255 255 255 / 0.28);
-  --glow-1: rgb(240 90 40 / 0.16);
-  --glow-2: rgb(255 176 103 / 0.08);
+  --cursor-glow: rgb(240 90 40 / 0.2);
+  --cursor-glow-size: 180px;
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
   --shadow-md: 0 10px 30px -12px rgb(0 0 0 / 0.55);
   --shadow-lg: 0 24px 60px -20px rgb(0 0 0 / 0.7);
@@ -57,6 +61,11 @@
   --container: 1160px;
   --gutter: clamp(1.25rem, 4vw, 2rem);
   --section-y: clamp(4.5rem, 9vw, 7.5rem);
+
+  /* Dot grid: the pitch and radius shared by the opening poster's dots and the page background's dots, so the
+     two grids line up (both are centred on the screen). */
+  --cell: max(8.4vw, 12svh);
+  --dot-r: clamp(1.2px, calc(var(--cell) * 0.011), 2.2px); /* about 3.5px across on a 1920px screen */
 }
 
 :root[data-theme='light'] {
@@ -64,6 +73,7 @@
 
   /* Warm white (not pure white) with pale-orange bands */
   --bg: #fffaf6;
+  --page: var(--bg);
   --bg-alt: #fff0e6;
   --card: #ffffff;
   --border: #f0d5c3;
@@ -83,9 +93,9 @@
   --nav-bg: rgb(255 250 246 / 0.8);
   --hover-bg: rgb(31 35 40 / 0.05);
   --grid-line: rgb(31 35 40 / 0.06);
+  --dot: rgb(240 90 40 / 0.32);
   --scrollbar-thumb: rgb(31 35 40 / 0.45);
-  --glow-1: rgb(240 90 40 / 0.18);
-  --glow-2: rgb(255 176 103 / 0.22);
+  --cursor-glow: rgb(240 90 40 / 0.18);
   --shadow-sm: 0 1px 2px rgb(31 35 40 / 0.06);
   --shadow-md: 0 10px 30px -14px rgb(31 35 40 / 0.25);
   --shadow-lg: 0 24px 60px -24px rgb(31 35 40 / 0.35);
@@ -148,7 +158,7 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow-x: clip;
-  background: var(--bg);
+  background: var(--page);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 1rem;
@@ -267,8 +277,9 @@ main:focus {
   scroll-margin-top: calc(var(--nav-h) - 8px);
 }
 
+/* A solid band: the alt colour mixed into the panel colour, so nothing (not even the page's dots) shows through. */
 .section--alt {
-  background: color-mix(in srgb, var(--bg-alt) 78%, transparent);
+  background: color-mix(in srgb, var(--bg-alt) 78%, var(--bg));
   border-block: 1px solid var(--border-soft);
 }
 

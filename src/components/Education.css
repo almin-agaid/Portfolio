@@ -1,0 +1,157 @@
+/* Desktop: heading stays pinned on the left while the timeline scrolls on the right. */
+@media (min-width: 960px) {
+  .education__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: start;
+  }
+
+  .education__intro {
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+  }
+
+  .education__intro .section-heading {
+    margin-bottom: 0;
+  }
+}
+
+.timeline {
+  --line-x: 22px;
+  position: relative;
+  display: grid;
+  gap: 1.75rem;
+  max-width: 820px;
+}
+
+.timeline__track {
+  position: absolute;
+  top: 22px;
+  bottom: 22px;
+  left: var(--line-x);
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: var(--border);
+  /* Let the line fade out below the last entry instead of ending abruptly. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent);
+  mask-image: linear-gradient(to bottom, #000 80%, transparent);
+}
+
+.timeline__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, var(--accent), var(--accent-2));
+  transform-origin: 50% 0;
+}
+
+.timeline__item {
+  position: relative;
+  padding-left: 4rem;
+}
+
+.timeline__dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--accent-ink);
+  box-shadow: 0 0 0 6px var(--bg);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.timeline__item:hover .timeline__dot {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.timeline__card {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s var(--ease);
+}
+
+.timeline__item:hover .timeline__card {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--border));
+  box-shadow: var(--shadow-md);
+}
+
+.timeline__period {
+  display: inline-block;
+  margin-bottom: 0.7rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: 0.78rem;
+}
+
+.timeline__program {
+  font-size: 1.25rem;
+}
+
+.timeline__institution {
+  margin-top: 0.3rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.timeline__highlights {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border-soft);
+}
+
+.timeline__highlights li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  color: var(--text-muted);
+  font-size: 0.94rem;
+}
+
+.timeline__highlights svg {
+  flex: none;
+  margin-top: 0.27rem;
+  color: var(--accent-ink);
+}
+
+@media (max-width: 480px) {
+  .timeline {
+    --line-x: 18px;
+  }
+
+  .timeline__item {
+    padding-left: 3.25rem;
+  }
+
+  .timeline__dot {
+    width: 36px;
+    height: 36px;
+  }
+
+  .timeline__track {
+    top: 18px;
+  }
+
+  .timeline__card {
+    padding: 1.25rem;
+  }
+}

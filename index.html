@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Min Agaid | Information Technology Student &amp; Aspiring IT Professional</title>
+    <meta
+      name="description"
+      content="Portfolio of Min Agaid, an Information Technology student building web applications and reliable systems. Explore projects, skills, education, and get in touch about internship opportunities."
+    />
+    <meta name="author" content="Min Agaid" />
+    <meta name="theme-color" content="#1F2328" />
+
+    <!-- Open Graph / social previews -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Min Agaid | Information Technology Student" />
+    <meta
+      property="og:description"
+      content="Projects, skills, and education of an aspiring IT professional. Open to internship opportunities."
+    />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Apply the saved theme before first paint to avoid a flash.
+         The key is versioned (-v2) so a theme saved before the black/orange redesign does not carry over. -->
+    <script>
+      try {
+        var saved = localStorage.getItem('portfolio-theme-v2')
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.dataset.theme = saved
+          if (saved === 'light') {
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFAF6')
+          }
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <noscript>This portfolio needs JavaScript enabled to display its content.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

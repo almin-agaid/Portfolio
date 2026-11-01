@@ -148,29 +148,7 @@
   white-space: nowrap;
 }
 
-.intro__tab {
-  position: absolute;
-  top: 38%;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.6rem;
-  padding: 0.9rem 0.7rem;
-  background: var(--intro-ink);
-  color: #fff;
-  font-weight: 800;
-}
-
-.intro__tab-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  transform: rotate(180deg);
-  writing-mode: vertical-rl;
-}
-
-/* A small hint on the right edge, set like the tab's label on the left (it reads upwards). Only where there is a mouse,
+/* A small hint on the right edge, set like the left tab's label (the side tab, see SideTab.css; it reads upwards). Only where there is a mouse,
    and it goes once a hand has been grabbed. One `transform`, never `translate` + `transform` (see HelloTab.css). */
 .intro__hint {
   position: absolute;
@@ -221,7 +199,7 @@
    1. the dot grid, a wave from the centre   2. the dial, then the hands   3. the numbers
    4. two seconds in, the chrome (label, cue, buttons) */
 .intro:not(.intro--go)
-  :is(.intro__dots i, .intro__dial, .intro__hands, .intro__row, .intro__brand, .intro__tab, .intro__cue, .intro__hint) {
+  :is(.intro__dots i, .intro__dial, .intro__hands, .intro__row, .intro__brand, .intro__cue, .intro__hint) {
   opacity: 0;
 }
 
@@ -247,10 +225,6 @@
 
 .intro--go .intro__cue {
   animation: intro-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.1s backwards;
-}
-
-.intro--go .intro__tab {
-  animation: intro-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.2s backwards;
 }
 
 .intro--go .intro__hint {
@@ -310,10 +284,6 @@
      (the numbers' line box is 0.8 x their 30vw font size, starting 0.9vw down) */
   .intro__brand {
     top: calc(0.9vw + 24vw + 0.4rem);
-  }
-
-  .intro__tab {
-    display: none;
   }
 }
 

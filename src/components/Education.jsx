@@ -37,11 +37,11 @@ export default function Education() {
             <motion.span className="timeline__fill" style={{ scaleY }} />
           </span>
 
-          {education.map((entry) => {
+          {education.map((entry, index) => {
             const Icon = getIcon(entry.icon)
             return (
               <motion.li
-                key={entry.id}
+                key={`${entry.id}-${index}`} /* the index keeps two entries with the same id from clashing */
                 className="timeline__item"
                 variants={itemVariants}
                 initial="hidden"

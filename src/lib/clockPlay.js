@@ -64,12 +64,14 @@ export function createClockPlay({ stage, art, dots, cols, rows, planes, hands, l
     return best
   }
 
+  // `hands` and the front plane are filled in by React's ref callbacks, which put null back while React unmounts (and
+  // StrictMode unmounts everything once in development, before this clock's cleanup runs), so every use checks first.
   const light = (name, grip = false) => {
     if (name === hotHand && !grip) return
     hotHand = name
     for (const key of Object.keys(hands)) {
-      hands[key].classList.toggle('is-hot', key === name && !grip)
-      hands[key].classList.toggle('is-held', key === name && grip)
+      hands[key]?.classList.toggle('is-hot', key === name && !grip)
+      hands[key]?.classList.toggle('is-held', key === name && grip)
     }
   }
 
@@ -186,8 +188,9 @@ export function createClockPlay({ stage, art, dots, cols, rows, planes, hands, l
 
   const shift = (target, factor) => {
     const move = `translate3d(${(pointer.x * factor).toFixed(2)}px, ${(pointer.y * factor).toFixed(2)}px, 0)`
-    if (Array.isArray(target)) target.forEach((element) => (element.style.transform = move))
-    else target.style.transform = move
+    for (const element of Array.isArray(target) ? target : [target]) {
+      if (element) element.style.transform = move
+    }
   }
 
   stage.addEventListener('pointerdown', onDown)
@@ -247,7 +250,9 @@ export function createClockPlay({ stage, art, dots, cols, rows, planes, hands, l
       light(null)
       swell(-1)
       stage.style.cursor = ''
-      ;[...planes.front, planes.middle, planes.deep].forEach((element) => (element.style.transform = ''))
+      for (const element of [...planes.front, planes.middle, planes.deep]) {
+        if (element) element.style.transform = ''
+      }
     },
   }
 }

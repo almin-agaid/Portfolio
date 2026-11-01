@@ -11,6 +11,7 @@ import HelloTab from './components/HelloTab'
 import Intro from './components/Intro'
 import Navbar from './components/Navbar'
 import Projects from './components/Projects'
+import SideTab from './components/SideTab'
 import Skills from './components/Skills'
 import BackToTop from './components/ui/BackToTop'
 import BackgroundDecor from './components/ui/BackgroundDecor'
@@ -53,6 +54,7 @@ export default function App() {
         <ScrollProgress />
         <Navbar ready={ready} />
         <HelloTab />
+        <SideTab ready={ready} />
 
         <main id="main" tabIndex={-1}>
           <Intro ready={ready} />

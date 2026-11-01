@@ -9,12 +9,6 @@ import './Intro.css'
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 const pad = (value) => String(value).padStart(2, '0')
-const initials = profile.name
-  .split(/\s+/)
-  .map((word) => word[0])
-  .join('')
-  .slice(0, 2)
-  .toUpperCase()
 const brand = profile.brand || profile.name
 
 // ---------- the dot grid ----------
@@ -231,10 +225,6 @@ export default function Intro({ ready }) {
         <p className="intro__brand" aria-hidden="true">
           {brand}
         </p>
-        <div className="intro__tab" aria-hidden="true">
-          <span>{initials}.</span>
-          <span className="intro__tab-label">Portfolio</span>
-        </div>
         <p className={`intro__hint${grabbed ? ' intro__hint--gone' : ''}`} aria-hidden="true">
           Grab a hand
         </p>

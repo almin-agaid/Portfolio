@@ -1,0 +1,72 @@
+/* The "MA. / Portfolio" tab on the left edge: it arrives with the opening poster and then stays on screen through every
+   section. Its black is the poster's ink (the same near-black on every theme); on the black page a hairline along its
+   edge keeps it from dissolving into the background. */
+.side-tab {
+  position: fixed;
+  top: 38%;
+  left: 0;
+  z-index: 45; /* above the page, below the navbar (50) and the modals (120) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+  padding: 0.9rem 0.7rem;
+  border: 1px solid transparent;
+  border-left: 0;
+  background: #0b0c0e;
+  color: #fff;
+  font-weight: 800;
+  pointer-events: none; /* it is decoration, never in the way of what is under it */
+  transition:
+    border-color 0.4s ease,
+    opacity 0.35s ease;
+}
+
+.side-tab__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transform: rotate(180deg);
+  writing-mode: vertical-rl;
+}
+
+/* over the site (not the orange poster) the hairline shows */
+.side-tab:not(.side-tab--poster) {
+  border-color: rgb(255 255 255 / 0.16);
+}
+
+/* it waits for the opening poster, then arrives with the rest of its chrome */
+.side-tab:not(.side-tab--go) {
+  opacity: 0;
+}
+
+.side-tab--go {
+  animation: side-tab-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.2s backwards;
+}
+
+@keyframes side-tab-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Narrower than the content column plus the tab, it would sit on top of the text, so below that width it stays with
+   the poster and fades out once the site slides over it. */
+@media (max-width: 1319px) {
+  .side-tab:not(.side-tab--poster) {
+    opacity: 0;
+  }
+}
+
+/* no tab on a phone (as on the poster before) */
+@media (max-width: 640px) {
+  .side-tab {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .side-tab--go {
+    animation: none;
+  }
+}

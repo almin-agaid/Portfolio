@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { skillCategories } from '../data/portfolioData'
 import { EASE, fadeUp, revealOnScroll } from '../lib/motion'
 import SectionHeading from './ui/SectionHeading'
+import StackPlayground from './ui/StackPlayground'
 import TechIcon from './ui/TechIcon'
 import { getIcon } from './ui/icons'
 import { hasLogo, techIcons, toSkill } from './ui/techIcons'
@@ -80,6 +81,8 @@ export default function Skills() {
             )
           })}
         </motion.ul>
+
+        <StackPlayground />
       </div>
     </section>
   )

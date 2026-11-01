@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { ArrowDown } from 'lucide-react'
 import { profile } from '../data/portfolioData'
+import { createClockPlay } from '../lib/clockPlay'
 import { sheetClip, sheetRadius } from '../lib/sheet'
 import { scrollToY } from '../lib/smoothScroll'
 import './Intro.css'
@@ -50,6 +51,8 @@ function useNow() {
 //  - it assembles in order: dot grid (a wave from the middle) -> dial -> hands -> numbers -> the "chrome" two seconds in;
 //  - the hands run on animation frames, so they sweep instead of ticking, and they wake pointing up and roll one
 //    full turn onto the real time;
+//  - it answers the mouse (lib/clockPlay.js): three parallax planes, the dot under the pointer swells, and a hand can
+//    be grabbed and turned (the numbers roll with it) before the clock springs back to the real time;
 //  - the poster stays pinned while the site slides up over it like a sheet (1:1 with the scroll).
 // Visitors who prefer reduced motion get the finished, still poster (the hands step once a second).
 export default function Intro({ ready }) {
@@ -83,14 +86,52 @@ export default function Intro({ ready }) {
   const handsRef = useRef({})
   const sweepStart = useRef(null)
 
+  // What the pointer plays with (lib/clockPlay.js)
+  const stageRef = useRef(null)
+  const artRef = useRef(null)
+  const dotsRef = useRef(null)
+  const rowRefs = useRef([])
+  const hourRef = useRef(null)
+  const minuteRef = useRef(null)
+  const playRef = useRef(null)
+  const [grabbed, setGrabbed] = useState(false) // the hint goes away once a hand has been grabbed
+
+  useEffect(() => {
+    const play = createClockPlay({
+      stage: stageRef.current,
+      art: artRef.current,
+      dots: dotsRef.current,
+      cols: COLS,
+      rows: ROWS,
+      planes: { front: rowRefs.current, middle: dotsRef.current, deep: artRef.current },
+      hands: handsRef.current,
+      lengths: Object.fromEntries(HANDS.map(({ name, length }) => [name, length])),
+      reduceMotion: Boolean(reduceMotion),
+      onGrab: () => setGrabbed(true),
+    })
+    playRef.current = play
+    return () => {
+      play.destroy()
+      playRef.current = null
+    }
+  }, [reduceMotion])
+
   // The hands run on animation frames from the visitor's local time, milliseconds included, so they sweep
-  // smoothly instead of ticking.
+  // smoothly instead of ticking. While somebody holds a hand (or the clock is springing back from it) the dial shows
+  // the time that hand points to instead, and the big numbers follow it.
   useEffect(() => {
     if (!ready || covered) return undefined
     sweepStart.current ??= performance.now()
     let frame
+    let last = performance.now()
+    const write = (ref, text) => {
+      if (ref.current && ref.current.textContent !== text) ref.current.textContent = text
+    }
     const draw = (time) => {
-      const date = new Date()
+      const dt = Math.min((time - last) / 1000, 0.05)
+      last = time
+      const { ms, playing, settled } = playRef.current?.frame(dt) ?? { ms: Date.now(), playing: false, settled: false }
+      const date = new Date(ms)
       const seconds = date.getSeconds() + (reduceMotion ? 0 : date.getMilliseconds() / 1000)
       const minutes = date.getMinutes()
       const angles = {
@@ -101,9 +142,17 @@ export default function Intro({ ready }) {
       // ease-out quartic: fast at first, landing softly on the real time
       const t = reduceMotion ? 1 : (time - sweepStart.current - SWEEP_DELAY_MS) / SWEEP_MS
       const progress = t <= 0 ? 0 : t >= 1 ? 1 : 1 - (1 - t) ** 4
+      const drawn = {}
       for (const { name } of HANDS) {
         const shown = progress < 1 ? -360 + (angles[name] + 360) * progress : angles[name]
+        drawn[name] = shown
         handsRef.current[name]?.setAttribute('transform', `rotate(${shown} 50 50)`)
+      }
+      playRef.current?.setAngles(drawn)
+      playRef.current?.setInteractive(progress >= 1) // the hands cannot be grabbed while they are still sweeping in
+      if (playing || settled) {
+        write(hourRef, pad(date.getHours()))
+        write(minuteRef, pad(date.getMinutes()))
       }
       frame = requestAnimationFrame(draw)
     }
@@ -115,15 +164,19 @@ export default function Intro({ ready }) {
     <section id="intro" className={`intro${ready || reduceMotion ? ' intro--go' : ''}`} aria-label="Introduction">
       <p className="sr-only">Scroll down to continue to the portfolio.</p>
 
-      <motion.div className="intro__stage" style={{ clipPath: clip, visibility: covered ? 'hidden' : 'visible' }}>
+      <motion.div
+        ref={stageRef}
+        className="intro__stage"
+        style={{ clipPath: clip, visibility: covered ? 'hidden' : 'visible' }}
+      >
         <motion.div className="intro__pan" style={live ? { y: panY, scale: panScale } : undefined}>
-          <div className="intro__dots" aria-hidden="true">
+          <div className="intro__dots" ref={dotsRef} aria-hidden="true">
             {DOTS.map((dot) => (
               <i key={dot.index} style={{ '--d': `${dot.ms}ms` }} />
             ))}
           </div>
 
-          <svg className="intro__art" viewBox="0 0 100 100" aria-hidden="true">
+          <svg className="intro__art" ref={artRef} viewBox="0 0 100 100" aria-hidden="true">
             <defs>
               <radialGradient id="intro-soft" cx="50%" cy="50%" r="50%">
                 <stop offset="0" stopColor="#050506" />
@@ -149,11 +202,27 @@ export default function Intro({ ready }) {
             </g>
           </svg>
 
-          <div className="intro__row intro__row--top" aria-hidden="true">
-            <span className="intro__digit">{pad(now.getHours())}</span>
-            <span className="intro__digit">{pad(now.getMinutes())}</span>
+          <div
+            className="intro__row intro__row--top"
+            ref={(element) => {
+              rowRefs.current[0] = element
+            }}
+            aria-hidden="true"
+          >
+            <span className="intro__digit" ref={hourRef}>
+              {pad(now.getHours())}
+            </span>
+            <span className="intro__digit" ref={minuteRef}>
+              {pad(now.getMinutes())}
+            </span>
           </div>
-          <div className="intro__row intro__row--bottom" aria-hidden="true">
+          <div
+            className="intro__row intro__row--bottom"
+            ref={(element) => {
+              rowRefs.current[1] = element
+            }}
+            aria-hidden="true"
+          >
             <span className="intro__digit">{MONTHS[now.getMonth()]}</span>
             <span className="intro__digit">{pad(now.getDate())}</span>
           </div>
@@ -166,6 +235,9 @@ export default function Intro({ ready }) {
           <span>{initials}.</span>
           <span className="intro__tab-label">Portfolio</span>
         </div>
+        <p className={`intro__hint${grabbed ? ' intro__hint--gone' : ''}`} aria-hidden="true">
+          Grab a hand
+        </p>
         <div className="intro__cue" aria-hidden="true" onClick={() => scrollToY(window.innerHeight + sheetRadius())}>
           <ArrowDown size={30} strokeWidth={2.2} />
         </div>

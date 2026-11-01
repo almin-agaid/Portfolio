@@ -1,0 +1,167 @@
+.toybox {
+  margin-top: 1.1rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.toybox__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.toybox__title {
+  font-size: 1.1rem;
+}
+
+.toybox__hint {
+  margin-top: 0.2rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.toybox__shake {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.toybox__shake:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+/* The box itself: a darker well with the page's dot grid inside. Touches that start on empty floor still scroll the
+   page; touches that start on a tile (below) grab it. */
+.toybox__box {
+  --tile: clamp(52px, 6vw, 72px);
+  position: relative;
+  height: clamp(250px, 26vw, 330px);
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+  border-radius: calc(var(--radius) - 4px);
+  background-color: color-mix(in srgb, var(--page) 72%, var(--bg-alt));
+  background-image: radial-gradient(circle, var(--dot) var(--dot-r), transparent calc(var(--dot-r) + 0.5px));
+  background-position: center;
+  background-size: var(--cell) var(--cell);
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.toybox__box.is-grabbing,
+.toybox__box.is-grabbing * {
+  cursor: grabbing;
+}
+
+/* The holder is moved by the physics (its transform is set from script) and never turns, so its name tooltip stays
+   upright; the tile inside it is the part that turns. */
+.toybox__body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--tile);
+  height: var(--tile);
+  opacity: 0; /* until the physics has placed it */
+  transform: translate3d(0, -200px, 0);
+  cursor: grab;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform;
+}
+
+.toybox__body.is-placed {
+  opacity: 1;
+}
+
+.toybox__body:hover {
+  z-index: 3;
+}
+
+.toybox__body.is-dragging {
+  z-index: 4;
+}
+
+.toy-tile {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: 1px solid color-mix(in srgb, var(--tile-color, var(--text)) 35%, var(--border));
+  border-radius: calc(var(--tile) * 0.26);
+  background: color-mix(in srgb, var(--tile-color, var(--text)) 14%, var(--bg-alt));
+  box-shadow: 0 10px 22px -14px rgb(0 0 0 / 0.6);
+  color: var(--tile-color, var(--text));
+  transition: box-shadow 0.2s ease;
+}
+
+.toy-tile svg {
+  width: 50%;
+  height: 50%;
+  pointer-events: none;
+}
+
+.toybox__body:hover .toy-tile {
+  box-shadow: 0 14px 28px -14px var(--tile-color, var(--accent));
+}
+
+.toybox__body.is-dragging .toy-tile {
+  box-shadow: 0 24px 38px -14px var(--tile-color, var(--accent));
+}
+
+/* Name tooltip on hover, like the logo tiles above */
+.toybox__body::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-alt);
+  box-shadow: var(--shadow-md);
+  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.2s var(--ease);
+}
+
+.toybox__body:hover::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.toybox__body.is-dragging::after {
+  opacity: 0;
+}
+
+@media (max-width: 520px) {
+  .toybox {
+    padding: 1rem;
+  }
+}

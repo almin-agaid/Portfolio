@@ -17,6 +17,8 @@
   overflow: hidden;
   background: var(--intro-bg);
   color: var(--intro-ink);
+  user-select: none; /* the hands can be dragged (lib/clockPlay.js) */
+  -webkit-user-select: none;
 }
 
 .intro__pan {
@@ -42,6 +44,13 @@
   place-self: center;
   border-radius: 50%;
   background: currentColor;
+  transition: transform 0.7s var(--ease); /* a swollen dot lets go slowly, which leaves a trail behind the pointer */
+}
+
+/* the dot under the pointer */
+.intro__dots i.is-hot {
+  transform: scale(2.1);
+  transition-duration: 0.15s;
 }
 
 /* ---------- Centre: the clock face (an SVG box, 62vmin square) ---------- */
@@ -67,6 +76,31 @@
 
 .intro__hands circle {
   fill: currentColor;
+}
+
+/* A hand under the pointer thickens, and thickens more while it is held */
+.intro__hands g line {
+  transition: stroke-width 0.2s ease;
+}
+
+.intro__hands g circle {
+  transition: r 0.2s ease;
+}
+
+.intro__hands g.is-hot line {
+  stroke-width: 0.8;
+}
+
+.intro__hands g.is-hot circle {
+  r: 1.7px;
+}
+
+.intro__hands g.is-held line {
+  stroke-width: 1.1;
+}
+
+.intro__hands g.is-held circle {
+  r: 2.2px;
 }
 
 /* ---------- Corner numbers ---------- */
@@ -136,6 +170,35 @@
   writing-mode: vertical-rl;
 }
 
+/* A small hint on the right edge, set like the tab's label on the left (it reads upwards). Only where there is a mouse,
+   and it goes once a hand has been grabbed. One `transform`, never `translate` + `transform` (see HelloTab.css). */
+.intro__hint {
+  position: absolute;
+  top: 50%;
+  right: 1.1rem;
+  font-family: 'Archivo', 'DM Sans', system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-stretch: 125%;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: translateY(-50%) rotate(180deg);
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.intro__hint--gone {
+  opacity: 0;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .intro__hint {
+    display: none;
+  }
+}
+
 .intro__cue {
   position: absolute;
   bottom: 2vh;
@@ -157,7 +220,8 @@
 /* ---------- Load sequence: the page assembles in order ----------
    1. the dot grid, a wave from the centre   2. the dial, then the hands   3. the numbers
    4. two seconds in, the chrome (label, cue, buttons) */
-.intro:not(.intro--go) :is(.intro__dots i, .intro__dial, .intro__hands, .intro__row, .intro__brand, .intro__tab, .intro__cue) {
+.intro:not(.intro--go)
+  :is(.intro__dots i, .intro__dial, .intro__hands, .intro__row, .intro__brand, .intro__tab, .intro__cue, .intro__hint) {
   opacity: 0;
 }
 
@@ -187,6 +251,10 @@
 
 .intro--go .intro__tab {
   animation: intro-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.2s backwards;
+}
+
+.intro--go .intro__hint {
+  animation: intro-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.5s backwards;
 }
 
 /* each dot stays hidden for the first half of its own duration, then fades in */

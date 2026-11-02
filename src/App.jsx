@@ -17,6 +17,8 @@ import BackToTop from './components/ui/BackToTop'
 import BackgroundDecor from './components/ui/BackgroundDecor'
 import CursorGlow from './components/ui/CursorGlow'
 import ScrollProgress from './components/ui/ScrollProgress'
+import { look } from './data/portfolioData'
+import useLivingBackground from './hooks/useLivingBackground'
 import { ResumeProvider } from './hooks/useResume'
 import useSmoothScroll from './hooks/useSmoothScroll'
 
@@ -27,6 +29,7 @@ export default function App() {
   const [ready, setReady] = useState(false)
   const reduceMotion = useReducedMotion()
   useSmoothScroll(!reduceMotion)
+  useLivingBackground(look.background)
 
   // Show the loader briefly, but never longer than needed for the web fonts to be ready.
   useEffect(() => {

@@ -325,6 +325,16 @@ export const contact = {
   formEndpoint: '',
 }
 
+/* ---------- Look ---------- */
+// How the page background behaves:
+//   'living' - the About, Projects and Contact panels get warm corner light and a fine grain, and the dot grid lights up
+//              around your mouse (on the page and on those panels)
+//   'calm'   - the same corner light and grain, but nothing follows the mouse
+//   'plain'  - flat panels, as before
+export const look = {
+  background: 'living',
+}
+
 /* ---------- Footer ---------- */
 export const footer = {
   tagline: 'Building thoughtful, reliable software one project at a time.',

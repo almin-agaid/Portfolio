@@ -1,0 +1,163 @@
+/* ==========================================================================
+   Backgrounds that are alive (the look.background setting in portfolioData.js, as data-look on <html>):
+     living  warm corner light + fine grain on the alternate sections, and the dot grid lights up around the mouse
+     calm    the same light and grain, nothing follows the mouse
+     plain   none of this (the flat panels in index.css)
+   The panels stay solid. Their light and grain are background layers that never change, so moving the mouse repaints
+   nothing there; the lit dots live in one small window that glides with the pointer.
+   ========================================================================== */
+
+/* where the mouse is: on the page background (--px / --py) and, from the panel's corner, on a panel (--bx / --by, with
+   the panel's size in --bw / --bh). Registered and non-inherited, so moving the mouse only restyles the one element
+   that owns them. */
+@property --px {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: -999px;
+}
+
+@property --py {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: -999px;
+}
+
+@property --pw {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --ph {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --bx {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: -999px;
+}
+
+@property --by {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: -999px;
+}
+
+@property --bw {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --bh {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+:root {
+  --dot-lit: rgb(240 90 40 / 0.9); /* a dot under the mouse: brighter and bigger than the resting dots */
+  /* The panels' solid base. On the dark theme it is a deeper charcoal than the cards on it (the old flat panel was almost
+     the same shade as the cards, which is why it read as flat); the light theme keeps its pale orange. */
+  --band-base: color-mix(in srgb, var(--bg) 82%, var(--page));
+  /* fine grain: white specks on the dark panels (dark ones on the light theme). The tiles are drawn once by lib/grain.js
+     into --grain-white / --grain-dark; until then (or if a canvas is not available) there is simply no grain. Kept faint:
+     it should add texture, not brightness. */
+  --grain: var(--grain-white, none);
+}
+
+:root[data-theme='light'] {
+  --dot-lit: rgb(240 90 40 / 0.75);
+  --band-base: color-mix(in srgb, var(--bg-alt) 78%, var(--bg));
+  --grain: var(--grain-dark, none);
+}
+
+/* ---------- The alternate sections (About, Projects, Contact) ---------- */
+/* Layers, top to bottom: grain, warm light from the top-left and bottom-right corners, a soft sheen along the top, then
+   the solid base colour. */
+:root[data-look='calm'] .section--alt,
+:root[data-look='living'] .section--alt {
+  background-color: var(--band-base);
+  background-image:
+    var(--grain),
+    radial-gradient(1000px 560px at 4% -10%, rgb(240 90 40 / 0.13), transparent 62%),
+    radial-gradient(900px 520px at 104% 112%, rgb(255 176 103 / 0.07), transparent 64%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.02), transparent 38%);
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    0 0;
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  background-size:
+    128px 128px,
+    auto,
+    auto,
+    auto;
+}
+
+/* living: the lit dots. A 520px window (.band-light, added to each panel by useLivingBackground) follows the mouse. It
+   is moved with a transform, so the browser only has to move a layer, and the mouse position lives on this element, not
+   on the panel, so the panel's own background (grain and all) is never repainted while the mouse moves. The window holds
+   the same dot grid as the page, shifted so the dots stay where the grid has them, and a soft mask fades them out
+   towards its edge. It sits under the panel's content (the content wrapper is positioned and comes later in the tree),
+   and the panel clips it at its edges. */
+.band-light {
+  display: none;
+}
+
+:root[data-look='living'] .section--alt {
+  overflow: clip;
+}
+
+:root[data-look='living'] .section--alt > .container {
+  position: relative;
+}
+
+:root[data-look='living'] .band-light {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 520px;
+  height: 520px;
+  background-image: radial-gradient(circle, var(--dot-lit) calc(var(--dot-r) * 1.6), transparent calc(var(--dot-r) * 1.6 + 0.5px));
+  background-position:
+    calc(var(--bw) / 2 - var(--bx) + 260px - var(--cell) / 2) calc(var(--bh) / 2 - var(--by) + 260px - var(--cell) / 2);
+  background-size: var(--cell) var(--cell);
+  -webkit-mask-image: radial-gradient(circle closest-side, #000 0%, rgb(0 0 0 / 0.55) 42%, transparent 100%);
+  mask-image: radial-gradient(circle closest-side, #000 0%, rgb(0 0 0 / 0.55) 42%, transparent 100%);
+  pointer-events: none;
+  transform: translate3d(calc(var(--bx) - 260px), calc(var(--by) - 260px), 0);
+  will-change: transform;
+}
+
+/* ---------- The page behind everything ---------- */
+/* living: the resting dots stay as they are (and are never repainted); a 460px window that follows the mouse holds a
+   bigger, brighter set of the same dots, so the dots there seem to swell and light up. The window's grid is shifted so
+   its dots sit exactly on the resting ones: the page background centres its grid in its own box (--pw / --ph, set by
+   useLivingBackground, because that box is narrower than the viewport by the scrollbar). */
+.bg-decor__light {
+  display: none;
+}
+
+:root[data-look='living'] .bg-decor__light {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 460px;
+  height: 460px;
+  background-image: radial-gradient(circle, var(--dot-lit) calc(var(--dot-r) * 2), transparent calc(var(--dot-r) * 2 + 0.5px));
+  background-position:
+    calc(var(--pw) / 2 - var(--px) + 230px - var(--cell) / 2) calc(var(--ph) / 2 - var(--py) + 230px - var(--cell) / 2);
+  background-size: var(--cell) var(--cell);
+  -webkit-mask-image: radial-gradient(circle closest-side, #000 0%, rgb(0 0 0 / 0.55) 40%, transparent 100%);
+  mask-image: radial-gradient(circle closest-side, #000 0%, rgb(0 0 0 / 0.55) 40%, transparent 100%);
+  pointer-events: none;
+  transform: translate3d(calc(var(--px) - 230px), calc(var(--py) - 230px), 0);
+  will-change: transform;
+}
